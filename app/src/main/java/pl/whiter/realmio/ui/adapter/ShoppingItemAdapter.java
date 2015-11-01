@@ -14,18 +14,29 @@ import pl.whiter.realmio.model.ShoppingItem;
  */
 public class ShoppingItemAdapter extends AbstractBaseRealmAdapter<ShoppingItem, ShoppingItemViewHolder> {
 
+    public interface ActionListener {
+        void onIncreaseClicked(int adapterPosition);
+
+        void onDecreaseClicked(int adapterPosition);
+
+        void onDeleteClicked(int adapterPosition);
+    }
+
     private LayoutInflater inflater;
 
-    public ShoppingItemAdapter(Context context, RealmList<ShoppingItem> shoppingList) {
+    private ActionListener actionListener;
+
+    public ShoppingItemAdapter(Context context, RealmList<ShoppingItem> shoppingList, ActionListener actionListener) {
         super(shoppingList);
         this.inflater = LayoutInflater.from(context);
+        this.actionListener = actionListener;
     }
 
 
     @Override
     public ShoppingItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = inflater.inflate(R.layout.shopping_list_item, parent, false);
-        return new ShoppingItemViewHolder(itemView);
+        View itemView = inflater.inflate(R.layout.shopping_details_list_item, parent, false);
+        return new ShoppingItemViewHolder(itemView, actionListener);
     }
 
     @Override

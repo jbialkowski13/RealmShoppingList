@@ -12,7 +12,6 @@ import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.EditText;
 
 import butterknife.Bind;
@@ -22,6 +21,7 @@ import io.realm.Realm;
 import io.realm.RealmChangeListener;
 import io.realm.RealmList;
 import pl.whiter.realmio.R;
+import pl.whiter.realmio.RealmApp;
 import pl.whiter.realmio.model.ShoppingItem;
 import pl.whiter.realmio.model.ShoppingList;
 import pl.whiter.realmio.ui.adapter.ShoppingItemAdapter;
@@ -58,14 +58,14 @@ public class ShoppingDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.shopping_details_activity);
         ButterKnife.bind(this);
         String itemUUID = getIntent().getExtras().getString(SHOPPING_LIST_ID_EXTRA);
-        realm = Realm.getDefaultInstance();
+        realm = RealmApp.getRealm();
         realm.addChangeListener(realmChangeListener);
         shoppingList = realm.where(ShoppingList.class).equalTo("id", itemUUID).findFirst();
         toolbar.setTitle(shoppingList.getDetails().getName());
         setSupportActionBar(toolbar);
-        shoppingItemAdapter = new ShoppingItemAdapter(this, shoppingList.getItems());
+        shoppingItemAdapter = new ShoppingItemAdapter(this, shoppingList.getItems(), actionListener);
         itemList.setLayoutManager(new GridLayoutManager(this, 1));
-        itemList.addOnItemTouchListener(new RecyclerItemClickListener(this, onItemClickListener));
+//        itemList.addOnItemTouchListener(new RecyclerItemClickListener(this, onItemClickListener));
         itemList.setAdapter(shoppingItemAdapter);
     }
 
@@ -116,7 +116,7 @@ public class ShoppingDetailsActivity extends AppCompatActivity {
         builder.show();
     }
 
-    private void onItemClicked(final ShoppingItem shoppingItem) {
+    private void onDeleteClicked(final ShoppingItem shoppingItem) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.delete_item)
                 .setMessage(getString(R.string.delete_item_message, shoppingItem.getName()))
@@ -135,13 +135,6 @@ public class ShoppingDetailsActivity extends AppCompatActivity {
                 .show();
     }
 
-    private RecyclerItemClickListener.OnItemClickListener onItemClickListener = new RecyclerItemClickListener.OnItemClickListener() {
-        @Override
-        public void onItemClick(View view, int position) {
-            onItemClicked(shoppingItemAdapter.getItem(position));
-        }
-    };
-
     private RealmChangeListener realmChangeListener = new RealmChangeListener() {
         @Override
         public void onChange() {
@@ -149,9 +142,41 @@ public class ShoppingDetailsActivity extends AppCompatActivity {
         }
     };
 
+    private ShoppingItemAdapter.ActionListener actionListener = new ShoppingItemAdapter.ActionListener() {
+        @Override
+        public void onIncreaseClicked(int adapterPosition) {
+            ShoppingItem item = shoppingItemAdapter.getItem(adapterPosition);
+            int newCount = item.getCount() + 1;
+            update(item, newCount);
+        }
+
+        @Override
+        public void onDecreaseClicked(int adapterPosition) {
+            ShoppingItem item = shoppingItemAdapter.getItem(adapterPosition);
+            if (item.getCount() > 0) {
+                int newCount = item.getCount() - 1;
+                update(item, newCount);
+            }
+        }
+
+        @Override
+        public void onDeleteClicked(int adapterPosition) {
+            ShoppingDetailsActivity.this.onDeleteClicked(shoppingItemAdapter.getItem(adapterPosition));
+        }
+    };
+
+    private void update(final ShoppingItem shoppingItem, final int newCount) {
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                shoppingItem.setCount(newCount);
+            }
+        });
+    }
+
     private void addItem(String item) {
         realm.beginTransaction();
-        ShoppingItem shoppingItem = new ShoppingItem(item);
+        ShoppingItem shoppingItem = new ShoppingItem(item, 1);
         ShoppingItem addedItem = realm.copyToRealm(shoppingItem);
         shoppingList.getItems().add(addedItem);
         realm.commitTransaction();

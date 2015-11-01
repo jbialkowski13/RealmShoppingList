@@ -13,6 +13,7 @@ import butterknife.OnClick;
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
 import pl.whiter.realmio.R;
+import pl.whiter.realmio.RealmApp;
 import pl.whiter.realmio.ui.adapter.ShoppingListAdapter;
 
 /**
@@ -37,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        realm = Realm.getDefaultInstance();
+        realm = RealmApp.getRealm();
         realm.addChangeListener(realmChangeListener);
         setSupportActionBar(toolbar);
         adapter = new ShoppingListAdapter(this, realm);

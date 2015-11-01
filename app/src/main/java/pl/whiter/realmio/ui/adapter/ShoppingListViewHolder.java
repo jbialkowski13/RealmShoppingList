@@ -24,7 +24,7 @@ public class ShoppingListViewHolder extends RecyclerView.ViewHolder {
     @Bind(R.id.shopping_list_name)
     TextView shoppingListName;
 
-    @Bind(R.id.shopping_list_creation_date)
+    @Bind(R.id.shopping_extra)
     TextView date;
 
 

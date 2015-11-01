@@ -16,6 +16,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.realm.Realm;
 import pl.whiter.realmio.R;
+import pl.whiter.realmio.RealmApp;
 import pl.whiter.realmio.model.ShoppingList;
 import pl.whiter.realmio.model.ShoppingListDetails;
 
@@ -43,7 +44,7 @@ public class CreateShoppingListActivity extends AppCompatActivity {
         setContentView(R.layout.create_shopping_list_activity);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
-        realm = Realm.getDefaultInstance();
+        realm = RealmApp.getRealm();
     }
 
     @Override
