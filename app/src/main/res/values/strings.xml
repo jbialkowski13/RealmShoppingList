@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Shopping list</string>
+    <string name="action_delete">Delete</string>
+    <string name="shopping_list_input_hint">Input shopping list name</string>
+    <string name="create">create</string>
+    <string name="add_item">Add item</string>
+    <string name="delete_item">Delete item</string>
+    <string name="delete_item_message">Do you want to delete %1$s?</string>
+</resources>
