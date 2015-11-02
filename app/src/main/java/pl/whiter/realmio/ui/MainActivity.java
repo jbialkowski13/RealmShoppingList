@@ -5,6 +5,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
 import butterknife.Bind;
@@ -13,6 +15,8 @@ import butterknife.OnClick;
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
 import pl.whiter.realmio.R;
+import pl.whiter.realmio.model.JsonProvider;
+import pl.whiter.realmio.model.ShoppingList;
 import pl.whiter.realmio.ui.adapter.ShoppingListAdapter;
 
 /**
@@ -53,9 +57,31 @@ public class MainActivity extends AppCompatActivity {
         realm.close();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main_activity, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_import:
+                importList();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     @OnClick(R.id.fab)
     void onAddClick() {
         CreateShoppingListActivity.start(this);
+    }
+
+    private void importList() {
+        realm.beginTransaction();
+        realm.createObjectFromJson(ShoppingList.class, JsonProvider.getJson());
+        realm.commitTransaction();
     }
 
     private RecyclerItemClickListener.OnItemClickListener onItemClickListener = new RecyclerItemClickListener.OnItemClickListener() {

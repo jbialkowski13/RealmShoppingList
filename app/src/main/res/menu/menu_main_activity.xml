@@ -1,0 +1,9 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".ui.CreateShoppingListActivity">
+    <item
+        android:id="@+id/action_import"
+        android:title="@string/import_list"
+        app:showAsAction="ifRoom" />
+</menu>
