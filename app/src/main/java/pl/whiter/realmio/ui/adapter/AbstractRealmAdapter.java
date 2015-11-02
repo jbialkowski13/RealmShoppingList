@@ -1,6 +1,7 @@
 package pl.whiter.realmio.ui.adapter;
 
 
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 
 import io.realm.Realm;
@@ -16,7 +17,7 @@ public abstract class AbstractRealmAdapter<T extends RealmObject, VH extends Rec
     protected RealmResults<T> results;
 
     public AbstractRealmAdapter(Realm realm) {
-        results = loadData(realm);
+        results = loadData(realm, null);
         notifyDataSetChanged();
     }
 
@@ -35,5 +36,5 @@ public abstract class AbstractRealmAdapter<T extends RealmObject, VH extends Rec
         return results.size();
     }
 
-    protected abstract RealmResults<T> loadData(Realm realm);
+    protected abstract RealmResults<T> loadData(Realm realm, @Nullable String query);
 }
