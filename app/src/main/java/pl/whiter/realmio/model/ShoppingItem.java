@@ -17,8 +17,9 @@ public class ShoppingItem extends RealmObject {
     }
 
 
-    public ShoppingItem(String name, int count) {
+    public ShoppingItem(String name, String id, int count) {
         this.name = name;
+        this.id = id;
         this.count = count;
     }
 

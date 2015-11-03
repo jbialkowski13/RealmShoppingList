@@ -14,6 +14,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 
+import java.util.UUID;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -176,7 +178,7 @@ public class ShoppingDetailsActivity extends AppCompatActivity {
 
     private void addItem(String item) {
         realm.beginTransaction();
-        ShoppingItem shoppingItem = new ShoppingItem(item, 1);
+        ShoppingItem shoppingItem = new ShoppingItem(item, UUID.randomUUID().toString(), 1);
         ShoppingItem addedItem = realm.copyToRealm(shoppingItem);
         shoppingList.getItems().add(addedItem);
         realm.commitTransaction();
